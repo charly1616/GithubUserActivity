@@ -26,7 +26,7 @@ function readAction(a){
             let times = a.times
             return  ((Number(times) != NaN && times>1) ? (" >> Pushed " + a.times + " times ") : " > Pushed ")+"to the " + a.payload.ref.split("/").at(-1) + " branch in the " + reponame + " repo"
         case "WatchEvent":
-            return " o Watched the repository " + reponame + " from " + a.org.login
+            return " o Watched the repository " + reponame + " from " + (a.repo?.name || "someone").split("/")[0]
         case "CreateEvent":
             return " + Created the " + a.payload["ref_type"] + " " + a.payload.full_ref + " in the " + reponame + " repo"
         case "PublicEvent":
@@ -40,7 +40,7 @@ function readAction(a){
             }
         case "MemberEvent":
             if (a.payload.action === "added"){
-                return " @ Added " + a.payload.member.login + " to the " + reponame + " repo from " + a.repo.name.split("/")[0]
+                return " @ Added " + (a.payload?.member?.login || "someone") + " to the " + reponame + " repo from " + a.repo.name.split("/")[0]
             }
         case "IssuesEvent":
             switch (a.payload.action){
@@ -51,7 +51,7 @@ function readAction(a){
                 case "labeled":
                     return " # Labeled the issue [" + a.payload.issue.title + "] as " + a.payload.labels[0].name + " in the " + reponame + " repo"
                 case "assigned":
-                    return " ^ Assigned the issue [" + a.payload.issue.title + "] to " + a.payload.assignee.login + " in the " + reponame + " repo"
+                    return " ^ Assigned the issue [" + a.payload.issue.title + "] to " + (a.payload?.assignee?.login || "someone") + " in the " + reponame + " repo"
                 default:
                     return " * " + a.payload.action + " the issue [" + a.payload.issue.title + "]"
             }   
